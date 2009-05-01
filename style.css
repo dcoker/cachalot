@@ -1,0 +1,15 @@
+#container {
+  font-family: helvetica,sans-serif;
+  margin: 0pt auto;
+  position: relative;
+  width: 640px;
+}
+.banner {
+  font-weight: bold;
+  padding-left: 0.5em;
+  background: rgb(255, 51, 51)
+}
+table { border: 1px solid #ADBFAC; }
+input, button { background: #FFBBAA; }
+td { vertical-align: top; }
+.over { background: #FF9999; }

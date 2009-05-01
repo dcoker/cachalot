@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>mixes and bits</title>
+    <link REL="StyleSheet" HREF="s/1/style.css" TYPE="text/css"/>
+    <script src="s/0/jquery.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $(".confirmable").click(function() { 
+          return confirm('rly?'); 
+        });
+        $(".stripes tr").mouseover(function() {
+          $(this).addClass("over");
+        }).mouseout(function() {
+          $(this).removeClass("over");
+        });
+      });
+      function confirm_remove(hash) {
+        if (confirm("o rly?")) {
+          document.location = "/remove/" + hash + "/{{ xsrf_token }}";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="container">
+      <div class="banner">&uArr; share!</div>
+      <div id="form">
+        <form action="/upload" method="post" enctype="multipart/form-data">
+          max file size is 1MB<br/>
+          <input name="file_1" type="file" size="40" /><br />
+          Send an email to <input name="consumer" size="20" value=""/> with a link.<br />
+          <input type="checkbox" name="secret" id="secret"/>
+          <label for="secret">only send an email (don't list it)</label><br/>
+          <input value="Upload" type="submit" />
+        </form>
+      </div>
+      <br/>
+      <div class="banner">&dArr; download</div>
+      <table width="100%" class="stripes">
+        {% for obj in data %} 
+        <tr>
+          <td>{{ obj.date|date:"D d M Y H:m" }}</td>
+          <td>
+            {% if obj.uploader %} 
+              {{ obj.uploader.nickname }} 
+            {% else %} 
+              anonymous 
+            {% endif %}
+            {% if obj.consumer %}
+              <br/>(for {{ obj.consumer }})
+            {% endif %}
+            {% if obj.secret %} (S) {% endif %}
+          </td>
+          <td>
+            <a href="/get/{{ obj.hash }}/{{ obj.filename }}">
+              {% if obj.filename %} 
+                {{ obj.filename|escape }}
+              {% else %}
+                no filename 
+              {% endif %}
+            </a>
+          </td>
+          <td><button onclick='confirm_remove("{{ obj.hash }}")'>remove</button></td>
+        </tr>
+        {% endfor %}
+      </table>
+        <form action="/remove/all/{{ xsrf_token }}" method="get">
+          <input class="confirmable" type="submit" value="remove everything" />
+        </form>
+      <br/>
+      <div class="banner">&hearts; people</div>
+      <div>
+        You are {{ you_are.email }}
+        {% if user_is_god %}
+          and you are an admin.
+        {% else %}
+          and we are watching you.
+        {% endif %}
+        <br/>
+        <div>
+          <form action="/love" 
+                method="get">
+            <input type="hidden" name="xt" value="{{ xsrf_token }}"/>
+            share the love with someone new:
+            <input name="friend"/>
+            <input type="submit" value="&lt;3"/>
+          </form>
+        </div>
+        <br/>
+        <form action="{{ logout_url }}" method="get">
+          <input type="submit" value="logout"/>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+Someone nicknamed {{ nickname }}, who is probably your friend, has uploaded a
+file for you.
+
+Click this URL to fetch it:
+{{ url }}
